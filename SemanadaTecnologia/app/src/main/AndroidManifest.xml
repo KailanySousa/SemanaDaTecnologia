@@ -5,6 +5,10 @@
     <uses-permission android:name="android.permission.CAMERA"></uses-permission>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+    <uses-feature android:name="android.hardware.camera"/>
+    <uses-feature
+        android:name="android.hardware.camera.front"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -28,7 +32,7 @@
                 android:value=".VisualizarFoto" />
         </activity>
         <activity android:name=".VisualizarFoto" android:label="Visualizar Foto"></activity>
-        <activity android:theme="@style/Theme.Transparent" android:name=".CameraActivity"></activity>
+        <activity android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" android:name=".CameraActivity"></activity>
     </application>
 
 </manifest>

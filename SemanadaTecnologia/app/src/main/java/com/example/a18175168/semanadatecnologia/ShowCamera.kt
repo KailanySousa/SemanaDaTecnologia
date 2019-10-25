@@ -3,8 +3,10 @@ package com.example.a18175168.semanadatecnologia
 import android.content.Context
 import android.content.res.Configuration
 import android.hardware.Camera
+import android.util.Log
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import android.view.View
 import android.widget.Toast
 import java.io.IOException
 
@@ -16,8 +18,10 @@ class ShowCamera: SurfaceView, SurfaceHolder.Callback {
     override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
      }
 
+
+
     override fun surfaceDestroyed(holder: SurfaceHolder?) {
-//        camera!!.stopPreview()
+        camera!!.stopPreview()
 //        camera!!.release()
     }
 
@@ -51,6 +55,31 @@ class ShowCamera: SurfaceView, SurfaceHolder.Callback {
             camera!!.startPreview()
         }catch (e:IOException){
             e.printStackTrace()
+        }
+
+    }
+
+    fun refreshCamera(camera: Camera) {
+        if (surfaceHolder!!.surface == null) {
+            // preview surface does not exist
+            return
+        }
+        // stop preview before making changes
+        try {
+            camera.stopPreview()
+        } catch (e: Exception) {
+            // ignore: tried to stop a non-existent preview
+        }
+
+        // set preview size and make any resize, rotate or
+        // reformatting changes here
+        // start preview with new settings
+        this.camera = camera
+        try {
+            camera.setPreviewDisplay(surfaceHolder)
+            camera.startPreview()
+        } catch (e: Exception) {
+            Log.d(View.VIEW_LOG_TAG, "Error starting camera preview: " + e.message)
         }
 
     }
