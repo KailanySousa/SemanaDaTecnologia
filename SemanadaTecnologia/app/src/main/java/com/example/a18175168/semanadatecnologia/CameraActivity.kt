@@ -11,14 +11,19 @@ import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
 import android.content.Intent
+import android.graphics.*
 import android.net.Uri
 import android.os.Build
 import android.support.annotation.RequiresApi
 import java.time.LocalDateTime
-import android.hardware.Camera.CameraInfo
-import android.graphics.BitmapFactory
-import android.R.attr.bitmap
+import android.util.Log
 import android.widget.Toast
+import com.example.a18175168.semanadatecnologia.model.Foto
+import android.opengl.ETC1.getHeight
+import android.opengl.ETC1.getWidth
+import android.graphics.Bitmap
+
+
 
 
 class CameraActivity: AppCompatActivity() {
@@ -179,6 +184,21 @@ class CameraActivity: AppCompatActivity() {
                     galleryAddPic()
                     camera!!.startPreview()
 
+//                    val fotoBitmap =  BitmapFactory.decodeFile(arquivo_foto.toString())
+//
+//                    val filtroBitmap = BitmapFactory.decodeResource(resources, R.drawable.teste)
+//
+//                    val resultado = overlay(fotoBitmap, filtroBitmap, 100F, 50F)
+//
+
+                    val foto = Foto(arquivo_foto.absolutePath)
+
+                    val previewFoto = Intent(this@CameraActivity, VisualizarFoto::class.java)
+
+                    previewFoto.putExtra("caminhoFoto", foto.caminho)
+                    startActivity(previewFoto)
+
+
                 }catch (e:FileNotFoundException){
                     e.printStackTrace()
                 }catch (e: IOException){
@@ -191,6 +211,14 @@ class CameraActivity: AppCompatActivity() {
 
     }
 
+//    private fun overlay(bmp1: Bitmap, bmp2: Bitmap, x: Float, y: Float): Bitmap {
+//        val bmOverlay = Bitmap.createBitmap(bmp1.width, bmp1.height, bmp1.config)
+//        val canvas = Canvas(bmOverlay)
+//        canvas.drawBitmap(bmp1, Matrix(), null)
+//        canvas.drawBitmap(bmp2, x, y, null)
+//        return bmOverlay
+//    }
+
     @RequiresApi(Build.VERSION_CODES.O)
     private fun galleryAddPic() {
         val mediaScanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
@@ -201,7 +229,7 @@ class CameraActivity: AppCompatActivity() {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun getOutPutMediaFile(): File? {
+    fun getOutPutMediaFile(): File? {
 
         val state = Environment.getExternalStorageState()
         if(state != Environment.MEDIA_MOUNTED){

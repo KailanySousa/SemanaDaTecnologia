@@ -17,6 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,7 +32,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".VisualizarFoto" />
         </activity>
-        <activity android:name=".VisualizarFoto" android:label="Visualizar Foto"></activity>
+        <activity android:name=".VisualizarFoto" android:label="Visualizar Foto">
+
+        </activity>
         <activity android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" android:name=".CameraActivity"></activity>
     </application>
 
