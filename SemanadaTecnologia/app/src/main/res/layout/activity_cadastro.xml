@@ -38,7 +38,7 @@
                 android:layout_marginStart="8dp"
                 app:cardBackgroundColor="@android:color/background_dark"
                 app:cardCornerRadius="30dp"
-                app:layout_constraintBottom_toTopOf="@+id/imageView"
+                app:layout_constraintBottom_toTopOf="@+id/img_cadastro"
                 app:layout_constraintStart_toStartOf="parent">
 
                 <ImageView
@@ -91,7 +91,7 @@
                 app:hintTextAppearance="@style/HintTextStyle"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageView">
+                app:layout_constraintTop_toBottomOf="@+id/img_cadastro">
 
                 <android.support.design.widget.TextInputEditText
                     android:id="@+id/txt_nome"
@@ -142,7 +142,7 @@
             </android.support.design.widget.TextInputLayout>
 
             <ImageView
-                android:id="@+id/imageView"
+                android:id="@+id/img_cadastro"
                 android:layout_width="347dp"
                 android:layout_height="254dp"
                 android:layout_marginEnd="8dp"
