@@ -6,10 +6,6 @@ import android.os.Environment
 import android.support.v7.app.AppCompatActivity
 import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.activity_camera.*
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
-import java.io.IOException
 import android.content.Intent
 import android.graphics.*
 import android.net.Uri
@@ -22,8 +18,7 @@ import com.example.a18175168.semanadatecnologia.model.Foto
 import android.opengl.ETC1.getHeight
 import android.opengl.ETC1.getWidth
 import android.graphics.Bitmap
-
-
+import java.io.*
 
 
 class CameraActivity: AppCompatActivity() {
@@ -184,6 +179,8 @@ class CameraActivity: AppCompatActivity() {
                     galleryAddPic()
                     camera!!.startPreview()
 
+                    val foto = Foto(arquivo_foto.toString())
+
 //                    val fotoBitmap =  BitmapFactory.decodeFile(arquivo_foto.toString())
 //
 //                    val filtroBitmap = BitmapFactory.decodeResource(resources, R.drawable.teste)
@@ -191,10 +188,9 @@ class CameraActivity: AppCompatActivity() {
 //                    val resultado = overlay(fotoBitmap, filtroBitmap, 100F, 50F)
 //
 
-                    val foto = Foto(arquivo_foto.absolutePath)
+
 
                     val previewFoto = Intent(this@CameraActivity, VisualizarFoto::class.java)
-
                     previewFoto.putExtra("caminhoFoto", foto.caminho)
                     startActivity(previewFoto)
 
@@ -212,10 +208,7 @@ class CameraActivity: AppCompatActivity() {
     }
 
 //    private fun overlay(bmp1: Bitmap, bmp2: Bitmap, x: Float, y: Float): Bitmap {
-//        val bmOverlay = Bitmap.createBitmap(bmp1.width, bmp1.height, bmp1.config)
-//        val canvas = Canvas(bmOverlay)
-//        canvas.drawBitmap(bmp1, Matrix(), null)
-//        canvas.drawBitmap(bmp2, x, y, null)
+
 //        return bmOverlay
 //    }
 
