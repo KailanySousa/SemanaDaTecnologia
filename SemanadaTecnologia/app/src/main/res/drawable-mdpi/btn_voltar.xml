@@ -9,7 +9,7 @@
         </shape>
     </item>
 
-    <item android:drawable="@drawable/ic_voltar">
+    <item android:drawable="@drawable/ic_cancel">
 
 
     </item>

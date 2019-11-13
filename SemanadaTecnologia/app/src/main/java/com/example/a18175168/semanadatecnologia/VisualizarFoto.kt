@@ -3,27 +3,27 @@ package com.example.a18175168.semanadatecnologia
 import android.annotation.TargetApi
 import android.content.Intent
 import android.graphics.*
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Build
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.MediaStore
-import android.util.Log
 import android.widget.Button
 import com.example.a18175168.semanadatecnologia.model.Foto
 import kotlinx.android.synthetic.main.activity_visualizar_foto.*
 import java.io.ByteArrayOutputStream
 import java.io.File
-import java.net.URI
-import android.graphics.Paint.FILTER_BITMAP_FLAG
-import android.R.attr.bitmap
-import android.opengl.ETC1.getHeight
-import android.opengl.ETC1.getWidth
 import android.graphics.Bitmap
 import android.media.ExifInterface
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
+import android.util.Log
+import com.example.a18175168.semanadatecnologia.adapter.FiltrosAdapter
+import com.example.a18175168.semanadatecnologia.model.Filtro
+import java.io.FileOutputStream
 import java.io.IOException
+import android.provider.MediaStore.Images.Media.getBitmap
+import android.graphics.drawable.BitmapDrawable
+
+
 
 
 class VisualizarFoto : AppCompatActivity() {
@@ -38,6 +38,9 @@ class VisualizarFoto : AppCompatActivity() {
 //        Picasso.with(img_cadastro.context).cancelRequest(img_cadastro)
 //        Picasso.with(img_cadastro.context).load("http://54.242.6.253$").into(img_cadastro)
 
+        val recyclerViewFiltro:RecyclerView = findViewById(R.id.recycler_view_filtro)
+        recyclerViewFiltro.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+
         val pegarCaminho = intent.getSerializableExtra("caminhoFoto") as String
 
         val foto = Foto(pegarCaminho)
@@ -47,9 +50,11 @@ class VisualizarFoto : AppCompatActivity() {
 
         val fotoBitmap = BitmapFactory.decodeFile(file.toString())
 
+        val rotatedBitmap = modifyOrientation(fotoBitmap, pegarCaminho)
+
 //        val rotatedBitmap = modifyOrientation(fotoBitmap,pegarCaminho)
 
-        val filtroBitmap = BitmapFactory.decodeResource(resources, R.drawable.filtro)
+        val filtroBitmap = BitmapFactory.decodeResource(resources, R.drawable.filtros_hackathon)
 
 //
 //        val bmOverlay = Bitmap.createBitmap(fotoBitmap.getWidth(),fotoBitmap.getHeight(),fotoBitmap.getConfig())
@@ -58,11 +63,7 @@ class VisualizarFoto : AppCompatActivity() {
 //        val paint = Paint(Paint.FILTER_BITMAP_FLAG)
 //        canvas.drawBitmap(filtroBitmap, 0F, 0F, paint)
 
-        val bitmap = overlayBitmap(fotoBitmap, filtroBitmap)
-
-        val bs = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG , 50,bs)
-        preview_img.setImageBitmap(bitmap)
+        preview_img.setImageBitmap(fotoBitmap)
 
 
 
@@ -72,6 +73,15 @@ class VisualizarFoto : AppCompatActivity() {
 
 
         btnAvancar.setOnClickListener {
+
+            val bitmapDrawable = preview_img.drawable
+
+
+
+            val bs = ByteArrayOutputStream()
+            val drawable = preview_img.drawable as BitmapDrawable
+            val bitmap = drawable.bitmap
+            bitmap.compress(Bitmap.CompressFormat.PNG , 50,bs)
 
             val cadastro = Intent(this@VisualizarFoto, Cadastro::class.java)
             cadastro.putExtra("foto", bs.toByteArray())
@@ -90,6 +100,7 @@ class VisualizarFoto : AppCompatActivity() {
             startActivity(voltarCamera)
         }
 
+        carregarLista(rotatedBitmap)
     }
 
     fun overlayBitmap(bitmapBackground: Bitmap, bitmapImage: Bitmap): Bitmap {
@@ -144,5 +155,40 @@ class VisualizarFoto : AppCompatActivity() {
         matrix.preScale((if (horizontal) -1 else 1).toFloat(), (if (vertical) -1 else 1).toFloat())
         return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
+
+    fun carregarLista(foto:Bitmap){
+
+        val filtros = ArrayList<Filtro>()
+
+        val filtro1 = Filtro(R.drawable.filtros_brasil, "Brasil" )
+        val filtro2 = Filtro(R.drawable.filtros_dragao, "Dragão" )
+        val filtro3 = Filtro(R.drawable.filtros_eufui, "#EUFUI" )
+        val filtro4 = Filtro(R.drawable.filtros_hackathon, "Hackathon" )
+        val filtro5 = Filtro(R.drawable.filtros_lux, "Lux" )
+        val filtro6 = Filtro(R.drawable.filtros_mundosenai, "Mundo Senai" )
+        val filtro7 = Filtro(R.drawable.filtros_senai, "Senai" )
+        val filtro8 = Filtro(R.drawable.filtros_shrek, "Shrek" )
+        val filtro9 = Filtro(R.drawable.filtros_vencontro, "V Encontro" )
+        val filtro10 = Filtro(R.drawable.filtros_yasuo, "Yasuo" )
+
+        filtros.add(filtro1)
+        filtros.add(filtro2)
+        filtros.add(filtro3)
+        filtros.add(filtro4)
+        filtros.add(filtro5)
+        filtros.add(filtro6)
+        filtros.add(filtro7)
+        filtros.add(filtro8)
+        filtros.add(filtro9)
+        filtros.add(filtro10)
+
+        Log.d("FILTROS", filtros.toString())
+
+        val filtroAdapter = FiltrosAdapter(filtros, this, foto)
+        recycler_view_filtro.adapter = filtroAdapter
+
+    }
+
+
 
 }

@@ -34,16 +34,12 @@ class CameraActivity: AppCompatActivity() {
 
 
 
-        camera = Camera.open(cameraId);
+        camera = Camera.open(0);
         val params = camera!!.parameters
 
         params.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
         camera!!.parameters = params
 
-
-
-
-        Log.d("aaaa", "Virou-se")
 
 //        val params = camera!!.parameters
 //
@@ -80,16 +76,6 @@ class CameraActivity: AppCompatActivity() {
 
     }
 
-    override fun onConfigurationChanged(newConfig: Configuration?) {
-        super.onConfigurationChanged(newConfig)
-        if (newConfig!!.orientation == Configuration.ORIENTATION_LANDSCAPE){
-            layoutInflater.inflate(R.layout.activity_camera, null)
-        }else if(newConfig!!.orientation == Configuration.ORIENTATION_PORTRAIT){
-            layoutInflater.inflate(R.layout.activity_camera, null)
-
-
-        }
-    }
 
     private fun releaseCamera() {
         // stop and release camera
@@ -146,8 +132,6 @@ class CameraActivity: AppCompatActivity() {
         //if the camera preview is the front
         if (cameraFront) {
             val cameraId = findBackFacingCamera();
-            Log.d("aaaa", cameraId.toString())
-
             if (cameraId >= 0) {
                 //open the backFacingCamera
                 //set a picture callback
@@ -155,26 +139,30 @@ class CameraActivity: AppCompatActivity() {
 
                 camera = Camera.open(cameraId);
                 camera!!.setDisplayOrientation(90);
-                camera!!.parameters.setRotation(90)
-                camera!!.parameters.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
                 showCamera!!.refreshCamera(camera!!);
             }
         } else {
             val cameraId = findFrontFacingCamera();
-            Log.d("aaaa", cameraId.toString())
-
             if (cameraId >= 0) {
                 //open the backFacingCamera
                 //set a picture callback
                 //refresh the preview
                 camera = Camera.open(cameraId);
-                camera!!.setDisplayOrientation(90);
-                camera!!.parameters.setRotation(90)
-                camera!!.parameters.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
-                showCamera!!.refreshCamera(camera!!);
+                if (this.resources.configuration.orientation != Configuration.ORIENTATION_LANDSCAPE){
+
+                    camera!!.parameters.set("orientantion", "portrait")
+                    camera!!.setDisplayOrientation(90)
+                    camera!!.parameters.setRotation(90)
+                    showCamera!!.refreshCamera(camera!!)
+
+                }else{
+                    camera!!. parameters.set("orientantion", "landscape")
+                    camera!!.setDisplayOrientation(0)
+                    camera!!. parameters.setRotation(0)
+                    showCamera!!.refreshCamera(camera!!)
+                }
             }
         }
-
     }
 
     override fun onPause() {
@@ -210,19 +198,19 @@ class CameraActivity: AppCompatActivity() {
                     camera!!.startPreview()
 
                     val foto = Foto(arquivo_foto.toString())
-
+//
 //                    val fotoBitmap =  BitmapFactory.decodeFile(arquivo_foto.toString())
 //
 //                    val filtroBitmap = BitmapFactory.decodeResource(resources, R.drawable.teste)
 //
 //                    val resultado = overlay(fotoBitmap, filtroBitmap, 100F, 50F)
-//
 
 
 
-//                    val previewFoto = Intent(this@CameraActivity, VisualizarFoto::class.java)
-//                    previewFoto.putExtra("caminhoFoto", foto.caminho)
-//                    startActivity(previewFoto)
+
+                    val previewFoto = Intent(this@CameraActivity, VisualizarFoto::class.java)
+                    previewFoto.putExtra("caminhoFoto", foto.caminho)
+                    startActivity(previewFoto)
 
 
                 }catch (e:FileNotFoundException){

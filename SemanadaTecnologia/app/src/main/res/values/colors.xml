@@ -7,5 +7,6 @@
     <color name="colorDarkRed">#b10606</color>
     <color name="colorBlack">#000000</color>
     <color name="colorWhite">#FFFFFF</color>
+    <color name="colorGrey">#8bbcbcbc</color>
     <color name="mtrl_textinput_default_box_stroke_color">#d3a30404</color>
 </resources>

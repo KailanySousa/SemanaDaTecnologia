@@ -21,6 +21,16 @@
         android:theme="@style/AppTheme"
         android:networkSecurityConfig="@xml/network_security_config">
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -35,10 +45,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".VisualizarFoto" />
         </activity>
-        <activity android:name=".VisualizarFoto" android:label="Visualizar Foto">
+        <activity android:name=".VisualizarFoto" android:label="Visualizar Foto" android:screenOrientation="portrait">
 
         </activity>
-        <activity android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" android:name=".CameraActivity" android:configChanges="orientation"></activity>
+        <activity android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen" android:name=".CameraActivity"></activity>
     </application>
 
 </manifest>

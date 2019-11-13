@@ -1,16 +1,16 @@
 package com.example.a18175168.semanadatecnologia
 
+import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.media.ExifInterface
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
+import android.support.v4.content.FileProvider
 import android.util.Log
 import android.widget.Toast
-import com.example.a18175168.semanadatecnologia.model.Cliente
-import com.example.a18175168.semanadatecnologia.model.Foto
 import com.example.a18175168.semanadatecnologia.services.ApiConfig
 import com.example.a18175168.semanadatecnologia.services.FotosService
 import kotlinx.android.synthetic.main.activity_cadastro.*
@@ -38,10 +38,10 @@ class Cadastro : AppCompatActivity() {
 
         val foto = intent.getByteArrayExtra("foto")
 
-        val pegarCaminho = intent.getSerializableExtra("caminhoFoto") as String
-
         val bitmap = BitmapFactory.decodeByteArray(foto,0,foto.size)
 
+
+        val pegarCaminho = intent.getSerializableExtra("caminhoFoto") as String
 
         val stream = ByteArrayOutputStream()
 
@@ -53,8 +53,6 @@ class Cadastro : AppCompatActivity() {
 
         fileOutputStream.write(bytes)
 
-
-
         Log.d("nomeArquivo", pegarCaminho)
 
 
@@ -63,8 +61,25 @@ class Cadastro : AppCompatActivity() {
         btn_enviar.setOnClickListener{
 
             uploadImage(txt_nome.text.toString(), pegarCaminho)
+
+            val voltarInicio = Intent(this, MainActivity::class.java)
+            startActivity(voltarInicio)
         }
 
+
+    }
+
+    fun postStories(context: Context, caminho: String){
+
+        val imagePath = File(caminho)
+
+        val file = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", imagePath)
+
+        val shareIntent = Intent("com.instagram.share.ADD_TO_STORY")
+        shareIntent.setDataAndType(file, "image/*")
+        shareIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        shareIntent.setPackage("com.instagram.android"); //Instagram App package
+        startActivity(Intent.createChooser(shareIntent, "Share.."))
 
     }
 
@@ -90,15 +105,14 @@ class Cadastro : AppCompatActivity() {
             }
 
             override fun onResponse(call: Call<ResponseBody>?, response: Response<ResponseBody>?) {
-                Toast.makeText(this@Cadastro,"IMAGEM ENVIADA", Toast.LENGTH_LONG).show()
                 Log.d("imagem", response!!.message())
+
+                postStories(this@Cadastro, caminhoFoto)
             }
 
 
-
-
-
         })
+
 
 
     }
