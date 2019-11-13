@@ -7,17 +7,14 @@ import android.support.v7.app.AppCompatActivity
 import android.widget.FrameLayout
 import kotlinx.android.synthetic.main.activity_camera.*
 import android.content.Intent
-import android.graphics.*
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.support.annotation.RequiresApi
-import java.time.LocalDateTime
 import android.util.Log
+import java.time.LocalDateTime
 import android.widget.Toast
 import com.example.a18175168.semanadatecnologia.model.Foto
-import android.opengl.ETC1.getHeight
-import android.opengl.ETC1.getWidth
-import android.graphics.Bitmap
 import java.io.*
 
 
@@ -34,14 +31,24 @@ class CameraActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
         frameLayout = findViewById(R.id.frameCamera)
-        var cameraAtual = 0
 
-        camera = Camera.open(0)
 
+
+        camera = Camera.open(cameraId);
         val params = camera!!.parameters
 
         params.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
         camera!!.parameters = params
+
+
+
+
+        Log.d("aaaa", "Virou-se")
+
+//        val params = camera!!.parameters
+//
+//        params.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
+//        camera!!.parameters = params
 
         showCamera = ShowCamera(this, camera!!)
         frameLayout!!.addView(showCamera)
@@ -54,6 +61,7 @@ class CameraActivity: AppCompatActivity() {
             }
 
         }
+
 
         btn_trocar_camera.setOnClickListener{
 
@@ -72,6 +80,16 @@ class CameraActivity: AppCompatActivity() {
 
     }
 
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        if (newConfig!!.orientation == Configuration.ORIENTATION_LANDSCAPE){
+            layoutInflater.inflate(R.layout.activity_camera, null)
+        }else if(newConfig!!.orientation == Configuration.ORIENTATION_PORTRAIT){
+            layoutInflater.inflate(R.layout.activity_camera, null)
+
+
+        }
+    }
 
     private fun releaseCamera() {
         // stop and release camera
@@ -94,6 +112,7 @@ class CameraActivity: AppCompatActivity() {
             Camera.getCameraInfo(i, info)
             if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
                 cameraId = i
+                this.cameraId = cameraId
                 cameraFront = true
                 break
             }
@@ -113,6 +132,7 @@ class CameraActivity: AppCompatActivity() {
             Camera.getCameraInfo(i, info)
             if (info.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
                 cameraId = i
+                this.cameraId = cameraId
                 cameraFront = false
                 break
 
@@ -126,6 +146,8 @@ class CameraActivity: AppCompatActivity() {
         //if the camera preview is the front
         if (cameraFront) {
             val cameraId = findBackFacingCamera();
+            Log.d("aaaa", cameraId.toString())
+
             if (cameraId >= 0) {
                 //open the backFacingCamera
                 //set a picture callback
@@ -133,26 +155,32 @@ class CameraActivity: AppCompatActivity() {
 
                 camera = Camera.open(cameraId);
                 camera!!.setDisplayOrientation(90);
+                camera!!.parameters.setRotation(90)
+                camera!!.parameters.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
                 showCamera!!.refreshCamera(camera!!);
             }
         } else {
             val cameraId = findFrontFacingCamera();
+            Log.d("aaaa", cameraId.toString())
+
             if (cameraId >= 0) {
                 //open the backFacingCamera
                 //set a picture callback
                 //refresh the preview
                 camera = Camera.open(cameraId);
                 camera!!.setDisplayOrientation(90);
+                camera!!.parameters.setRotation(90)
+                camera!!.parameters.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
                 showCamera!!.refreshCamera(camera!!);
             }
         }
+
     }
 
     override fun onPause() {
         super.onPause()
         camera!!.stopPreview()
         camera!!.parameters.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
-
 
     }
 
@@ -169,12 +197,14 @@ class CameraActivity: AppCompatActivity() {
 
             val arquivo_foto = getOutPutMediaFile()
 
+
             if (arquivo_foto == null){
                 return
             }else{
                 try{
                     val fos = FileOutputStream(arquivo_foto)
                     fos.write(data)
+                    Log.d("data2222", data.toString())
                     fos.close()
                     galleryAddPic()
                     camera!!.startPreview()
@@ -190,9 +220,9 @@ class CameraActivity: AppCompatActivity() {
 
 
 
-                    val previewFoto = Intent(this@CameraActivity, VisualizarFoto::class.java)
-                    previewFoto.putExtra("caminhoFoto", foto.caminho)
-                    startActivity(previewFoto)
+//                    val previewFoto = Intent(this@CameraActivity, VisualizarFoto::class.java)
+//                    previewFoto.putExtra("caminhoFoto", foto.caminho)
+//                    startActivity(previewFoto)
 
 
                 }catch (e:FileNotFoundException){
@@ -206,6 +236,8 @@ class CameraActivity: AppCompatActivity() {
 
 
     }
+
+
 
 //    private fun overlay(bmp1: Bitmap, bmp2: Bitmap, x: Float, y: Float): Bitmap {
 

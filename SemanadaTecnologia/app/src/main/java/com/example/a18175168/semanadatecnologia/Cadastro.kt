@@ -2,6 +2,8 @@ package com.example.a18175168.semanadatecnologia
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
+import android.media.ExifInterface
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
@@ -22,6 +24,7 @@ import retrofit2.Response
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 
 class Cadastro : AppCompatActivity() {
 
@@ -68,7 +71,12 @@ class Cadastro : AppCompatActivity() {
     fun uploadImage(nomeUsuario:String, caminhoFoto:String){
 
         val file = File(caminhoFoto)
-        val imageBody = RequestBody.create(MediaType.parse("image/*"), file)
+        val oldBitmap: Bitmap = BitmapFactory.decodeFile(file.path)
+        val bitmap = modifyOrientation(oldBitmap,file.path)
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 30,stream)
+        val image  = stream.toByteArray()
+        val imageBody = RequestBody.create(MediaType.parse("image/png"), image)
 
         val codBody = RequestBody.create(MediaType.parse("text/plain"),nomeUsuario)
         val body = MultipartBody.Part.createFormData("image", file.name, imageBody)
@@ -93,6 +101,38 @@ class Cadastro : AppCompatActivity() {
         })
 
 
+    }
+
+    @Throws(IOException::class)
+    fun modifyOrientation(bitmap: Bitmap, image_absolute_path: String): Bitmap {
+        val ei = ExifInterface(image_absolute_path)
+        val orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
+
+        when (orientation) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> return rotate(bitmap, 90f)
+
+            ExifInterface.ORIENTATION_ROTATE_180 -> return rotate(bitmap, 180f)
+
+            ExifInterface.ORIENTATION_ROTATE_270 -> return rotate(bitmap, 270f)
+
+            ExifInterface.ORIENTATION_FLIP_HORIZONTAL -> return flip(bitmap, true, false)
+
+            ExifInterface.ORIENTATION_FLIP_VERTICAL -> return flip(bitmap, false, true)
+
+            else -> return bitmap
+        }
+    }
+
+    fun rotate(bitmap: Bitmap, degrees: Float): Bitmap {
+        val matrix = Matrix()
+        matrix.postRotate(degrees)
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
+    }
+
+    fun flip(bitmap: Bitmap, horizontal: Boolean, vertical: Boolean): Bitmap {
+        val matrix = Matrix()
+        matrix.preScale((if (horizontal) -1 else 1).toFloat(), (if (vertical) -1 else 1).toFloat())
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
 }

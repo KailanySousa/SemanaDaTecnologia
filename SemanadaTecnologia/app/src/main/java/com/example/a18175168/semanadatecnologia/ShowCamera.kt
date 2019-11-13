@@ -9,32 +9,48 @@ import android.view.SurfaceView
 import android.view.View
 import android.widget.Toast
 import java.io.IOException
+import android.view.Surface.ROTATION_270
+import android.view.Surface.ROTATION_180
+import android.view.Surface.ROTATION_90
+import android.view.Surface.ROTATION_0
+import android.R.attr.rotation
+import android.view.Surface
+import android.support.v4.view.ViewCompat.getRotation
+import android.support.v4.view.ViewCompat.getRotation
+import android.app.Activity
+import android.hardware.Camera.CameraInfo
+
+
+
+
+
+
+
 
 class ShowCamera: SurfaceView, SurfaceHolder.Callback {
 
     var camera: Camera? = null
     var surfaceHolder: SurfaceHolder? = null
+    val cameraActivity:CameraActivity?=null
 
     override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
+
+
      }
 
 
 
     override fun surfaceDestroyed(holder: SurfaceHolder?) {
-        camera!!.stopPreview()
+//        camera!!.stopPreview()
 //        camera!!.release()
+
     }
 
     override fun surfaceCreated(holder: SurfaceHolder?) {
 
+
+
         val params = camera!!.parameters
-
-        val sizes = params.supportedPictureSizes
-        var mSize:Camera.Size = sizes[0]
-        for (i in 0 until sizes.size){
-            mSize = sizes[i]
-        }
-
 
         if (this.resources.configuration.orientation != Configuration.ORIENTATION_LANDSCAPE){
 
@@ -42,10 +58,13 @@ class ShowCamera: SurfaceView, SurfaceHolder.Callback {
             camera!!.setDisplayOrientation(90)
             params.setRotation(90)
 
+
         }else{
             params.set("orientantion", "landscape")
             camera!!.setDisplayOrientation(0)
             params.setRotation(0)
+
+
         }
 
         params.setPictureSize(640 ,480)
@@ -59,7 +78,9 @@ class ShowCamera: SurfaceView, SurfaceHolder.Callback {
 
     }
 
+
     fun refreshCamera(camera: Camera) {
+
         if (surfaceHolder!!.surface == null) {
             // preview surface does not exist
             return
@@ -91,5 +112,7 @@ class ShowCamera: SurfaceView, SurfaceHolder.Callback {
         surfaceHolder!!.addCallback(this)
 
     }
+
+
 
 }
