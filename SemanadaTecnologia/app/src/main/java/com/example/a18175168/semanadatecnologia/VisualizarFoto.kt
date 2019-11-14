@@ -22,13 +22,13 @@ import java.io.FileOutputStream
 import java.io.IOException
 import android.provider.MediaStore.Images.Media.getBitmap
 import android.graphics.drawable.BitmapDrawable
-
-
+import com.example.a18175168.semanadatecnologia.R.id.recycler_view_filtro
 
 
 class VisualizarFoto : AppCompatActivity() {
 
     val cameraActivity:CameraActivity? = null
+    var rotatedBitmap:Bitmap? = null
 
     @TargetApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -42,6 +42,7 @@ class VisualizarFoto : AppCompatActivity() {
         recyclerViewFiltro.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
         val pegarCaminho = intent.getSerializableExtra("caminhoFoto") as String
+        val cameraFront = intent.getSerializableExtra("cameraFront") as String
 
         val foto = Foto(pegarCaminho)
 
@@ -50,7 +51,14 @@ class VisualizarFoto : AppCompatActivity() {
 
         val fotoBitmap = BitmapFactory.decodeFile(file.toString())
 
-        val rotatedBitmap = modifyOrientation(fotoBitmap, pegarCaminho)
+        if(cameraFront == ""){
+            rotatedBitmap = modifyOrientation(fotoBitmap, pegarCaminho)
+        }else{
+            rotatedBitmap = modifyOrientation2(fotoBitmap, pegarCaminho)
+        }
+
+
+        val reducedBitmap = Bitmap.createScaledBitmap(rotatedBitmap,640,480,true)
 
 //        val rotatedBitmap = modifyOrientation(fotoBitmap,pegarCaminho)
 
@@ -63,7 +71,7 @@ class VisualizarFoto : AppCompatActivity() {
 //        val paint = Paint(Paint.FILTER_BITMAP_FLAG)
 //        canvas.drawBitmap(filtroBitmap, 0F, 0F, paint)
 
-        preview_img.setImageBitmap(fotoBitmap)
+        preview_img.setImageBitmap(rotatedBitmap)
 
 
 
@@ -74,14 +82,10 @@ class VisualizarFoto : AppCompatActivity() {
 
         btnAvancar.setOnClickListener {
 
-            val bitmapDrawable = preview_img.drawable
-
-
-
             val bs = ByteArrayOutputStream()
             val drawable = preview_img.drawable as BitmapDrawable
             val bitmap = drawable.bitmap
-            bitmap.compress(Bitmap.CompressFormat.PNG , 50,bs)
+            bitmap.compress(Bitmap.CompressFormat.PNG , 100,bs)
 
             val cadastro = Intent(this@VisualizarFoto, Cadastro::class.java)
             cadastro.putExtra("foto", bs.toByteArray())
@@ -100,29 +104,8 @@ class VisualizarFoto : AppCompatActivity() {
             startActivity(voltarCamera)
         }
 
-        carregarLista(rotatedBitmap)
+        carregarLista(reducedBitmap)
     }
-
-    fun overlayBitmap(bitmapBackground: Bitmap, bitmapImage: Bitmap): Bitmap {
-
-        val bitmap1Width = bitmapBackground.width
-        val bitmap1Height = bitmapBackground.height
-        val bitmap2Width = bitmapImage.width
-        val bitmap2Height = bitmapImage.height
-
-        val marginLeft = (bitmap1Width * 0.5 - bitmap2Width * 0.5).toFloat()
-        val marginTop = (bitmap1Height * 0.5 - bitmap2Height * 0.5).toFloat()
-
-        val overlayBitmap = Bitmap.createBitmap(bitmap1Width, bitmap1Height, bitmapBackground.config)
-        val canvas = Canvas(overlayBitmap)
-
-
-        canvas.drawBitmap(bitmapBackground, Matrix(), null)
-        canvas.drawBitmap(bitmapImage, marginLeft, marginTop, null)
-
-        return overlayBitmap
-    }
-
 
     @Throws(IOException::class)
     fun modifyOrientation(bitmap: Bitmap, image_absolute_path: String): Bitmap {
@@ -144,6 +127,15 @@ class VisualizarFoto : AppCompatActivity() {
         }
     }
 
+    fun modifyOrientation2(bitmap: Bitmap, image_absolute_path: String): Bitmap {
+
+
+        return rotate(bitmap, 270f)
+
+
+    }
+
+
     fun rotate(bitmap: Bitmap, degrees: Float): Bitmap {
         val matrix = Matrix()
         matrix.postRotate(degrees)
@@ -160,16 +152,34 @@ class VisualizarFoto : AppCompatActivity() {
 
         val filtros = ArrayList<Filtro>()
 
-        val filtro1 = Filtro(R.drawable.filtros_brasil, "Brasil" )
-        val filtro2 = Filtro(R.drawable.filtros_dragao, "Dragão" )
-        val filtro3 = Filtro(R.drawable.filtros_eufui, "#EUFUI" )
-        val filtro4 = Filtro(R.drawable.filtros_hackathon, "Hackathon" )
-        val filtro5 = Filtro(R.drawable.filtros_lux, "Lux" )
-        val filtro6 = Filtro(R.drawable.filtros_mundosenai, "Mundo Senai" )
-        val filtro7 = Filtro(R.drawable.filtros_senai, "Senai" )
-        val filtro8 = Filtro(R.drawable.filtros_shrek, "Shrek" )
-        val filtro9 = Filtro(R.drawable.filtros_vencontro, "V Encontro" )
-        val filtro10 = Filtro(R.drawable.filtros_yasuo, "Yasuo" )
+        val filtro1 = Filtro(R.drawable.senai1, "Semana da Tecnologia" )
+        val filtro2 = Filtro(R.drawable.cafe_2, "Café RH" )
+        val filtro3 = Filtro(R.drawable.e1, "Empresas 1" )
+        val filtro4 = Filtro(R.drawable.e2, "Empresas 2" )
+        val filtro5 = Filtro(R.drawable.e3, "Empresas 3" )
+        val filtro6 = Filtro(R.drawable.e4, "Empresas 4" )
+        val filtro7 = Filtro(R.drawable.e5, "Empresas 5" )
+        val filtro8 = Filtro(R.drawable.e6, "Empresas 6" )
+        val filtro9 = Filtro(R.drawable.e7, "Empresas 7" )
+        val filtro10 = Filtro(R.drawable.e8, "Empresas 8" )
+        val filtro11 = Filtro(R.drawable.e9, "Empresas 9" )
+        val filtro12 = Filtro(R.drawable.feixes, "Feixes" )
+        val filtro13 = Filtro(R.drawable.forum, "Forum" )
+        val filtro16 = Filtro(R.drawable.hackathon, "Hackathon 1" )
+        val filtro17 = Filtro(R.drawable.mecathon, "Mecathon" )
+        val filtro18 = Filtro(R.drawable.mundo_senai, "Mundo Senai 1" )
+        val filtro19 = Filtro(R.drawable.semana_encontro, "Semana Encontro" )
+        val filtro20 = Filtro(R.drawable.senai, "Senai 1" )
+        val filtro21 = Filtro(R.drawable.filtros_brasil, "Brasil" )
+        val filtro22 = Filtro(R.drawable.filtros_dragao, "Dragão" )
+        val filtro23 = Filtro(R.drawable.filtros_eufui, "#EUFUI" )
+        val filtro24 = Filtro(R.drawable.filtros_hackathon, "Hackathon 2" )
+        val filtro25 = Filtro(R.drawable.filtros_lux, "Lux" )
+        val filtro26 = Filtro(R.drawable.filtros_mundosenai, "Mundo Senai 2" )
+        val filtro27 = Filtro(R.drawable.filtros_senai, "Senai 2" )
+        val filtro28 = Filtro(R.drawable.filtros_shrek, "Shrek" )
+        val filtro29 = Filtro(R.drawable.filtros_vencontro, "V Encontro" )
+        val filtro30 = Filtro(R.drawable.filtros_yasuo, "Yasuo" )
 
         filtros.add(filtro1)
         filtros.add(filtro2)
@@ -181,6 +191,24 @@ class VisualizarFoto : AppCompatActivity() {
         filtros.add(filtro8)
         filtros.add(filtro9)
         filtros.add(filtro10)
+        filtros.add(filtro11)
+        filtros.add(filtro12)
+        filtros.add(filtro13)
+        filtros.add(filtro16)
+        filtros.add(filtro17)
+        filtros.add(filtro18)
+        filtros.add(filtro19)
+        filtros.add(filtro20)
+        filtros.add(filtro21)
+        filtros.add(filtro22)
+        filtros.add(filtro23)
+        filtros.add(filtro24)
+        filtros.add(filtro25)
+        filtros.add(filtro26)
+        filtros.add(filtro27)
+        filtros.add(filtro28)
+        filtros.add(filtro29)
+        filtros.add(filtro30)
 
         Log.d("FILTROS", filtros.toString())
 

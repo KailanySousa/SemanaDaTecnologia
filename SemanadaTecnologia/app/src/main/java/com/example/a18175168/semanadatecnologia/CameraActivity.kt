@@ -25,6 +25,7 @@ class CameraActivity: AppCompatActivity() {
     var camera: Camera? = null
     var cameraId:Int = 0
     var cameraFront = false
+    var front = ""
     private var mPicture: Camera.PictureCallback? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +35,9 @@ class CameraActivity: AppCompatActivity() {
 
 
 
-        camera = Camera.open(0);
+
+        camera = Camera.open(cameraId);
+
         val params = camera!!.parameters
 
         params.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
@@ -133,9 +136,6 @@ class CameraActivity: AppCompatActivity() {
         if (cameraFront) {
             val cameraId = findBackFacingCamera();
             if (cameraId >= 0) {
-                //open the backFacingCamera
-                //set a picture callback
-                //refresh the preview
 
                 camera = Camera.open(cameraId);
                 camera!!.setDisplayOrientation(90);
@@ -148,6 +148,7 @@ class CameraActivity: AppCompatActivity() {
                 //set a picture callback
                 //refresh the preview
                 camera = Camera.open(cameraId);
+                front = "true"
                 if (this.resources.configuration.orientation != Configuration.ORIENTATION_LANDSCAPE){
 
                     camera!!.parameters.set("orientantion", "portrait")
@@ -159,6 +160,7 @@ class CameraActivity: AppCompatActivity() {
                     camera!!. parameters.set("orientantion", "landscape")
                     camera!!.setDisplayOrientation(0)
                     camera!!. parameters.setRotation(0)
+                    front = ""
                     showCamera!!.refreshCamera(camera!!)
                 }
             }
@@ -210,6 +212,7 @@ class CameraActivity: AppCompatActivity() {
 
                     val previewFoto = Intent(this@CameraActivity, VisualizarFoto::class.java)
                     previewFoto.putExtra("caminhoFoto", foto.caminho)
+                    previewFoto.putExtra("cameraFront", front)
                     startActivity(previewFoto)
 
 

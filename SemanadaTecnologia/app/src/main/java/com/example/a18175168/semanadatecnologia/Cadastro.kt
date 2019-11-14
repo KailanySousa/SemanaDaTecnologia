@@ -100,7 +100,7 @@ class Cadastro : AppCompatActivity() {
 
         call.enqueue(object : Callback<ResponseBody>{
             override fun onFailure(call: Call<ResponseBody>?, t: Throwable?) {
-                Toast.makeText(this@Cadastro,"ERRO!!! + ${t!!.message}", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@Cadastro,"Erro de conexão \n Tente novamente", Toast.LENGTH_LONG).show()
                 Log.d("erro imagem", t!!.message)
             }
 
